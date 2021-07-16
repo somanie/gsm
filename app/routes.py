@@ -1,7 +1,9 @@
-from flask import current_app as app
+from flask import Blueprint
 from app.models import User
 from app import gsm
 import random
+
+bp = Blueprint("main", __name__)
 
 env = gsm.env
 vlr = gsm.vlr
@@ -10,8 +12,8 @@ msc = gsm.msc
 bss = gsm.bss
 Subscriber = gsm.Subscriber
 
-@app.route("/")
-@app.route("/<string:duration>")
+@bp.route("/")
+@bp.route("/<string:duration>")
 def index(duration="predetermined"):
     if duration.lower() == 'random':
         randomness = True
