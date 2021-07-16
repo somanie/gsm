@@ -1,0 +1,42 @@
+Processes:
+MS (Mobile Subscriber)
+BSS (Base Station Subsystem):
+    BSC (Base Station Controller)
+    BTS (Base Transceiver Station)
+MSC (Mobile Switching Center)
+VLR (Virtual Location Register)
+HLR (Home Location Register)
+AuC (Authentication Center)
+PSTN (Public Switched Telephone Network)
+
+Resources:
+radio resource
+
+1. Call init:
+MS sends a request for radio resource allocation to the BSS
+BSS assigns the MS a channel with a given frequency and time slot
+The channel constitutes the communication route between the MS and the BSS
+
+2. MS confirms the established channel
+BSS can initiate the connection to the MSC
+
+3. Authentication:
+MS connects to the network
+AuC verifies the subscriber using the IMSI number
+MS and the MSC can start communicating
+
+Encryption:
+MSC initiates a ciphering procedure and transmits to the BTS
+BTS forwards the ciphering procedure to the MS
+MS enables ciphering to the BTS
+
+4. MSC verifies that the requested service is allowed for the subscriber using the VLR
+VLR confirms the service requested
+MSC starts the call setup
+
+5. MSC allocates a voice channel between the MSC and the BSS
+BSS notifies the MS about the change to voice mode
+MS returns a confirmation message
+MSC routes the call to the dialled number
+MSC is notified that the called subscriber is being alerted when the call is received
+MS receives a ring notification
