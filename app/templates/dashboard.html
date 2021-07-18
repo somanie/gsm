@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+    <title>Dashboard</title>
+{% endblock head %}
+
+{% block body %}
+    <div class="container">
+        {% if current_user.is_authenticated %}
+            <h1>Welcome, {{ current_user }}</h1>
+        {% else %}
+            <h1>Welcome, Anonymous User</h1>
+        {% endif %}
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block scripts %}
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.js" integrity="sha512-lUsN5TEogpe12qeV8NF4cxlJJatTZ12jnx9WXkFXOy7yFbuHwYRTjmctvwbRIuZPhv+lpvy7Cm9o8T9e+9pTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const labels = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+         ];
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'green',
+                borderColor: 'blue',
+                data: [0, 10, 5, 2, 20, 30, 45],
+            }]
+        };
+        const config = {
+            type: 'line',
+            data,
+            options: {}
+        };
+        var myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+    </script>
+{% endblock scripts %}
