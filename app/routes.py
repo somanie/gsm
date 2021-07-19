@@ -56,13 +56,14 @@ def index():
 # @bp.route("/simulation")
 @bp.route("/simulation")
 def simulation():
+    checked = "checked" if request.args.get('random') else ""
+
     if range := request.args.get('range'):
-        if request.args.get('random'):
+        if checked:
             sim = generate_simulation(random=True)
         else:
             sim = generate_simulation(_range=range)
-        
-        return render_template("simulation.html", values=sim)
+        return render_template("simulation.html", values=sim, checked=checked)
     
     else:
-        return render_template("simulation.html", values=[0*24])
+        return render_template("simulation.html", values=[0*24], checked=checked)
