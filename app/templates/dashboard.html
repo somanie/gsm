@@ -11,63 +11,28 @@
         {% else %}
             <h1>Welcome, Anonymous User</h1>
         {% endif %}
-        <div>
-            <canvas id="myChart"></canvas>
+
+        <div class="simulations row">
+            <h4>Your simulations:</h4>
+            {% for simulation in current_user.simulations %}
+                 <div class="chart-container">
+                     <canvas class="canvas"></canvas>
+                 </div>
+            {% endfor %}
+            <div class="chart-container">
+                <canvas class="chart" onload="console.log('Hello')"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas class="chart" onload="createChart([13, 78, 23, 56, 65, 78, 45, 23, 19])"></canvas>
+            </div>
         </div>
+        <!-- <div>
+            <canvas id="myChart"></canvas>
+        </div> -->
     </div>
 {% endblock body %}
 
 {% block scripts %}
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.js" integrity="sha512-lUsN5TEogpe12qeV8NF4cxlJJatTZ12jnx9WXkFXOy7yFbuHwYRTjmctvwbRIuZPhv+lpvy7Cm9o8T9e+9pTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
-        const above50 = (ctx, value) => ctx.p1.parsed.y > 50 ? value : undefined;
-        const below50 = (ctx, value) => ctx.p1.parsed.y < 50 ? value : undefined;
-
-        const genericOptions = {
-            fill: false,
-            interaction: {
-                intersect: false
-            },
-            radius: 3,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        };
-        const config = {
-            type: 'line',
-            data: {
-                labels: ["9AM", "12PM", "3PM", "6PM", "9PM", "12AM", "3AM", "6AM", "9AM"],
-                datasets: [
-                    {
-                        label: 'My First Dataset',
-                        data: [13, 78, 23, 56, 65, 78, 45, 23, 19],
-                        borderColor: 'green',
-                        segment: {
-                            borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || above50(ctx, 'rgba(255, 0, 21, 0.5)') || below50(ctx, 'rgba(0, 204, 255, 0.5)'),
-                            borderDash: ctx => skipped(ctx, [6, 6]),
-                        }
-                    },
-                    {
-                        label: 'My Second Dataset',
-                        data: [23, 43, 24, 78, 12, 09, 34, 54, 70],
-                        borderColor: 'green',
-                        segment: {
-                            borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || above50(ctx, 'rgba(255, 0, 21, 0.5)') || below50(ctx, 'rgba(0, 204, 255, 0.5)'),
-                            borderDash: ctx => skipped(ctx, [6, 6]),
-                        }
-                    }
-                ]
-            },
-            options: genericOptions
-        };
-        var myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
-
-    </script>
+    <script src="{{url_for('static', filename='js/script.js')}}"></script>
 {% endblock scripts %}

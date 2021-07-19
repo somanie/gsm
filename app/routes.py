@@ -1,18 +1,15 @@
+from operator import imod
 from flask import Blueprint, render_template, redirect, url_for, request
-from app.models import db, User
+from app.models import db, User, Subscriber
 from app import gsm
 import random
 from flask_login import login_user, login_required, logout_user, current_user
 from app.forms import RegistrationForm, LoginForm
+from app.utils import generate_simulation
 
 bp = Blueprint("main", __name__)
 
-env = gsm.env
-vlr = gsm.vlr
-auc = gsm.auc
-msc = gsm.msc
-bss = gsm.bss
-Subscriber = gsm.Subscriber
+
 
 @bp.route('/register', methods=["GET", "POST"])
 def register():
@@ -54,25 +51,18 @@ def logout():
 
 @bp.route("/")
 def index():
-    return render_template("dashboard.html")
-    # return "Hello World"
+    return redirect(url_for('main.simulation'))
 
+# @bp.route("/simulation")
 @bp.route("/simulation")
-@bp.route("/simulation/<string:duration>")
-def simulation(duration="predetermined"):
-    if duration.lower() == 'random':
-        randomness = True
+def simulation():
+    if range := request.args.get('range'):
+        if request.args.get('random'):
+            sim = generate_simulation(random=True)
+        else:
+            sim = generate_simulation(_range=range)
+        
+        return render_template("simulation.html", values=sim)
+    
     else:
-        randomness = False
-
-    users = User.query.all()
-    for user in users:
-        sub = Subscriber(
-                        env, 
-                        user.name, 
-                        bss, 
-                        random.randint(9, 150) if randomness else user.call_duration, 
-                        user.IMSI)
-        print(f"{sub.name}'s call duration is {sub.call_duration}")
-    env.run()
-    return render_template("simulation.html")
+        return render_template("simulation.html", values=[0*24])

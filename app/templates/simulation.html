@@ -5,5 +5,82 @@
 {% endblock head %}
 
 {% block body %}
-    
+    <div class="container mt-3">
+        {% if current_user.is_authenticated %}
+            <h1>Welcome, {{ current_user }}</h1>
+        {% else %}
+            <h1>Welcome, Anonymous User</h1>
+        {% endif %}
+
+        <form action="{{ url_for('main.simulation') }}" method="get" class="col-md-11 ml-5">
+            <div class="form-group row">
+                <label for="customRange"> Value range</label>
+                <input type="range" name="range" id="range" class="custom-range" onInput="$('#rangeval').html($(this).val())">
+                <span id="rangeval">50<!-- Default value --></span>
+            </div>
+            <div class="row">
+                <div class="col-10"></div>
+                <div class="form-group form-check col-1">
+                    <input type="checkbox" name="random" id="random" class="form-check-input" checked>
+                    <label for="random" class="form-check-label">Random</label>
+                </div>
+                <div class="form-group col-1">
+                    <input type="submit" value="Try" class="btn btn-block btn-primary">
+                </div>
+            </div>
+        </form>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
 {% endblock body %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.js" integrity="sha512-lUsN5TEogpe12qeV8NF4cxlJJatTZ12jnx9WXkFXOy7yFbuHwYRTjmctvwbRIuZPhv+lpvy7Cm9o8T9e+9pTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="{{url_for('static', filename='js/script.js')}}"></script> -->
+    <script>
+        const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+        const above50 = (ctx, value) => ctx.p1.parsed.y > 50 ? value : undefined;
+        const below50 = (ctx, value) => ctx.p1.parsed.y < 50 ? value : undefined;
+
+        const genericOptions = {
+            fill: false,
+            interaction: {
+                intersect: false
+            },
+            radius: 3,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        const config = {
+            type: 'line',
+            data: {
+                labels: ["6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM",
+                        "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM",
+                        "8PM", "9PM", "10PM", "11PM", "12AM", "1AM",
+                        "2AM", "3AM", "4AM", "5AM"],
+                datasets: [
+                    {
+                        label: 'Base Tranceiver Station',
+                        data: {{ values|safe }},
+                        borderColor: 'rgba(0, 204, 255, 0.5)',
+                        segment: {
+                            borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || above50(ctx, 'rgba(255, 0, 21, 0.5)') || below50(ctx, 'rgba(0, 204, 255, 0.5)'),
+                            borderDash: ctx => skipped(ctx, [6, 6]),
+                        }
+                    }
+                ]
+            },
+            options: genericOptions
+        };
+
+        var myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+{% endblock scripts %}
